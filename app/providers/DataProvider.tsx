@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -15,27 +15,34 @@ export const DataContext = createContext({
 });
 
 export function DataProvider({ children }) {
-  const [characters, setCharacters] = useState([]);
+  const [data, setData] = useState({
+    people: [],
+    planets: [],
+    species: [],
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    fetch("https://swapi.info/api/people").then(async (res) => {
-      const characters = await res.json();
-      setCharacters(characters);
+
+    const promises = ["people", "planets", "species"].map((group) =>
+      fetch(`https://swapi.info/api/${group}`)
+    );
+
+    Promise.all(promises).then(async (res) => {
+      const [people, planets, species] = await Promise.all(
+        res.map((res) => res.json())
+      );
+      setData({ people, planets, species });
       setLoading(false);
     });
   }, []);
 
-  const data = useMemo(
-    () => ({
-      characters,
-      loading,
-    }),
-    [characters, loading]
+  return (
+    <DataContext.Provider value={{ loading, ...data }}>
+      {children}
+    </DataContext.Provider>
   );
-
-  return <DataContext.Provider value={data}>{children}</DataContext.Provider>;
 }
 
 export default function useData() {
