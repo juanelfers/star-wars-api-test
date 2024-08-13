@@ -1,16 +1,4 @@
-"use client";
-
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-export const DataContext = createContext({
-  loading: false,
-  characters: [],
-});
+import { createContext, useContext, useEffect, useState } from "react";
 
 const mapPeople = ({ people, planets, species }) => {
   people.forEach((char) => {
@@ -21,6 +9,11 @@ const mapPeople = ({ people, planets, species }) => {
   });
   return { people };
 };
+
+export const DataContext = createContext({
+  loading: false,
+  data: {},
+});
 
 export function DataProvider({ children }) {
   const [data, setData] = useState({

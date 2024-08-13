@@ -12,7 +12,6 @@ export default function Character({ data }) {
       <h5 className="text-sm text-slate-500 flex gap-2 items-center">
         {/* Species */}
         {data.species.map(({ name }) => name)}
-        {!data.species.length && "Human"}
         {/* Planet */}
         <IoPlanetSharp /> {data.homeworld.name}
       </h5>
