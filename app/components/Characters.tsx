@@ -25,7 +25,7 @@ export default function Characters() {
   return (
     <div className="grid grid-cols-custom gap-5">
       {characters.map((character) => (
-        <Character data={character} />
+        <Character key={character.name} data={character} />
       ))}
     </div>
   );
