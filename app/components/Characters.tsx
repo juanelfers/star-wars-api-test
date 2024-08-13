@@ -20,6 +20,8 @@ export default function Characters() {
     );
   }, [people, search]);
 
+  if (!characters.length) return <div className="text-warning">No results for the applied filters</div>;
+
   return (
     <div className="grid grid-cols-custom gap-5">
       {characters.map((character) => (

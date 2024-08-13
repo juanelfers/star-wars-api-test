@@ -4,15 +4,16 @@ import { Divider } from "@nextui-org/react";
 import Characters from "./components/Characters";
 import SearchInput from "./components/SearchInput";
 import useData from "./providers/DataProvider";
+import Loading from "./components/Loading";
 
 export default function Home() {
   const { loading } = useData();
 
-  if (loading) return null;
+  if (loading) return <Loading />;
 
   return (
     <div className="p-5 space-y-5">
-      <h1 className="text-2xl">Star Wars</h1>
+      <h1 className="text-2xl text-primary">Star Wars</h1>
       <Divider />
       <SearchInput />
       <Divider />
