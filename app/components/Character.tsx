@@ -17,11 +17,20 @@ export default function Character({ data }) {
       <h5 className="text-sm text-slate-500 flex gap-2 items-center">
         {/* Species */}
         {data.species.map(({ name }) => (
-          <span className="hover:text-slate-400 transition-colors" onClick={searchBy(name)}>{name}</span>
+          <span
+            key={name}
+            className="hover:text-slate-400 transition-colors"
+            onClick={searchBy(name)}
+          >
+            {name}
+          </span>
         ))}
         {/* Homeworld */}
         <IoPlanetSharp />{" "}
-        <span className="hover:text-slate-400 transition-colors" onClick={searchBy(data.homeworld.name)}>
+        <span
+          className="hover:text-slate-400 transition-colors"
+          onClick={searchBy(data.homeworld.name)}
+        >
           {data.homeworld.name}
         </span>
       </h5>
