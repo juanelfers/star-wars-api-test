@@ -1,49 +1,35 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useMemo } from "react";
 
-const mapPeople = ({ people, planets, species }) => {
-  people.forEach((char) => {
-    char.homeworld = planets[char.homeworld.split("/").pop() - 1];
-    char.species = char.species.map(
+const mapPeople = ({ people, planets, species }) => ({
+  people: people.map((char) => {
+    const c = { ...char };
+    c.homeworld = planets[c.homeworld.split("/").pop() - 1];
+    c.species = c.species.map(
       (specie) => species[specie.split("/").pop() - 1]
     );
-  });
-  return { people };
-};
+
+    return c;
+  }),
+});
 
 export const DataContext = createContext({
-  loading: false,
   data: {},
 });
 
-export function DataProvider({ children }) {
-  const [data, setData] = useState({
-    people: [],
-    planets: [],
-    species: [],
-  });
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-
-    const promises = ["people", "planets", "species"].map((group) =>
-      fetch(`https://swapi.info/api/${group}`)
-    );
-
-    Promise.all(promises).then(async (res) => {
-      const [people, planets, species] = await Promise.all(
-        res.map((res) => res.json())
-      );
-      setData({ ...mapPeople({ people, planets, species }), planets, species });
-      setLoading(false);
-    });
-  }, []);
-
-  return (
-    <DataContext.Provider value={{ loading, ...data }}>
-      {children}
-    </DataContext.Provider>
+export function DataProvider({
+  apiData: { people, planets, species },
+  children,
+}) {
+  const data = useMemo(
+    () => ({
+      ...mapPeople({ people, planets, species }),
+      planets,
+      species,
+    }),
+    []
   );
+
+  return <DataContext.Provider value={data}>{children}</DataContext.Provider>;
 }
 
 export default function useData() {

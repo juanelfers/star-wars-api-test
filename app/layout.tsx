@@ -10,15 +10,31 @@ export const metadata: Metadata = {
   description: "Fan page",
 };
 
-export default function RootLayout({
+const getApiData = async () => {
+  const promises = ["people", "planets", "species"].map((group) =>
+    fetch(`https://swapi.info/api/${group}`)
+  );
+
+  return Promise.all(promises).then(async (res) => {
+    const [people, planets, species] = await Promise.all(
+      res.map((res) => res.json())
+    );
+
+    return { people, planets, species };
+  });
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const data = await getApiData();
+
   return (
     <html lang="en" className="dark text-foreground">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers apiData={data}>{children}</Providers>
       </body>
     </html>
   );
