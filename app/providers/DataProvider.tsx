@@ -2,10 +2,8 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -13,6 +11,16 @@ export const DataContext = createContext({
   loading: false,
   characters: [],
 });
+
+const mapPeople = ({ people, planets, species }) => {
+  people.forEach((char) => {
+    char.homeworld = planets[char.homeworld.split("/").pop() - 1];
+    char.species = char.species.map(
+      (specie) => species[specie.split("/").pop() - 1]
+    );
+  });
+  return { people };
+};
 
 export function DataProvider({ children }) {
   const [data, setData] = useState({
@@ -33,7 +41,7 @@ export function DataProvider({ children }) {
       const [people, planets, species] = await Promise.all(
         res.map((res) => res.json())
       );
-      setData({ people, planets, species });
+      setData({ ...mapPeople({ people, planets, species }), planets, species });
       setLoading(false);
     });
   }, []);
